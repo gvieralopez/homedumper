@@ -72,7 +72,7 @@ Feel free to delete the images from boxes you don't want to dump to your db (if 
 Once you have the frames you want to process, simply run:
 
 ```bash
-$ python -m homedumper boxify output/myhome/myhome.mp4
+$ python -m homedumper boxify output/myhome
 ```
 
 This will read each image and extract the box name from it and as many smaller images
