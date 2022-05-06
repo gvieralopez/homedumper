@@ -1,7 +1,10 @@
 # homedumper
 
 Computer vision software to automate the process of dumping a Pokemon HOME 
-database from a video. This project is still in an early stage. 
+database from a video. 
+
+> This project is still in an early stage and some of the
+> instructions below are not yet implemented. 
 
 ## 1. Instalation
 
@@ -28,7 +31,7 @@ If you want to, you can record your own video and place it in the `data` folder.
 Make sure to mimic the one in this repo, paying attention to the following:
 
 1. Place your cursor over `Newest 30` button before start recording.
-2. Delete any parts of the video from the beginin and the end, that do not contain 
+2. Delete any parts of the video from the begining and the end, that do not contain 
 the information of the boxes you want to process
 
 The following step will assume we are using the video from `data/myhome.mp4`,
@@ -60,9 +63,9 @@ This will create the following folder structure:
 
 Feel free to delete the images from boxes you don't want to dump to your db (if any).
 
-> ℹ️ Pro tip: If you already have high quality pictures of your HOME boxes, you can
-> create a similar folder structure and proceed with the following step.
-
+> ℹ️ Pro tip: If you already have high quality pictures of your HOME boxes (1280 
+> x 720), you can create a similar folder structure and proceed with the 
+> following step.
 
 ### 2.3 Reading the content of each box from the key frames
 
