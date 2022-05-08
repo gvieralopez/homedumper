@@ -1,9 +1,8 @@
 import cv2
 import pathlib
+import logging
 import numpy.typing as npt
-
-# Constant values
-DEFAULT_OUT = "./output"
+from homedumper.const import DEFAULT_OUT
 
 
 class FrameExtractor:
@@ -14,16 +13,16 @@ class FrameExtractor:
     def __init__(self, video_path: str, out_path: str = DEFAULT_OUT):
 
         # Ensure video path and output path are valid and get Path objects
-        self._digest_paths(video_path, out_path)
+        if not self._digest_paths(video_path, out_path):
+            raise ValueError("Invalid video path")
         self.frame_count = 1
         self.processed_frames = []
 
-    def _digest_paths(
-        self, video_path: str, output_path: str = DEFAULT_OUT
-    ) -> tuple[pathlib.Path, pathlib.Path]:
+    def _digest_paths(self, video_path: str, output_path: str = DEFAULT_OUT) -> bool:
         """
         Digests the video path and output path into a tuple of Path objects.
-        Checks if the video path exists creates the output path if it doesn't exist.
+        Creates the output path if it doesn't exist and returns False if the 
+        video path doesn't exist or is a folder.
 
         Parameters
         ----------
@@ -31,21 +30,13 @@ class FrameExtractor:
                 String describing the video path
         output_path : str, optional
                 String describing the output path, by default DEFAULT_OUT
-
-        Returns
-        -------
-        tuple[Path, Path]
-            Tuple of Path objects describing the video and output paths
-
-        Raises
-        ------
-        ValueError if the video path doesn't exist or is a folder
         """
 
         # Check if video path exists and is a file
         video_path = pathlib.Path(video_path)
         if not video_path.exists() or video_path.is_dir():
-            raise ValueError(f"Invalid video path: {video_path.absolute()}")
+            logging.error(f"Invalid video path: {video_path.absolute()}")
+            return False
 
         # Create a path object for the output
         output_path = pathlib.Path(output_path)
@@ -58,12 +49,19 @@ class FrameExtractor:
 
         self.video_path = video_path
         self.output_path = output_path
+        return True
 
-    def extract_frames(self):
+    def extract_frames(self) -> int:
         """
         Extracts frames from the video and saves them to the output path only
         if they are unique.
+
+        Returns
+        -------
+        int
+            Number of frames extracted
         """
+
         # Create output path if it doesn't exist
         cap = cv2.VideoCapture(str(self.video_path))
 
@@ -74,7 +72,7 @@ class FrameExtractor:
 
             # If the frame is empty, break
             if not ret:
-                return
+                return len(self.processed_frames)
 
             self.process_frame(frame, self.output_path)
 
@@ -200,10 +198,21 @@ class FrameExtractor:
 
 
 def extract(video_path: str, output_path: str = DEFAULT_OUT):
+    """
+    Extracts frames from the video and saves them to the output path only
+    if they are unique.
 
-    fe = FrameExtractor(video_path, output_path)
-    fe.extract_frames()
+    Parameters
+    ----------
+    video_path : str
+        Path to the video file
+    output_path : str, optional
+        Path to the folder where the output will be generated, by default
+        './output/'
+    """
 
-
-if __name__ == "__main__":
-    extract("./data/myhome.mp4")
+    try:
+        fe = FrameExtractor(video_path, output_path)
+    except ValueError:
+        return 0
+    return fe.extract_frames()
