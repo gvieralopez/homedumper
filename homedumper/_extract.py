@@ -72,7 +72,7 @@ class FrameExtractor:
 
             # If the frame is empty, break
             if not ret:
-                return len(self.processed_frames)
+                return self.frame_count
 
             self.process_frame(frame, self.output_path)
 
@@ -192,7 +192,7 @@ class FrameExtractor:
             if self._is_not_duplicate(frame):
 
                 # Save the frame to the output path
-                img_name = f"{self.frame_count}.png"
+                img_name = f"{self.frame_count}.png".rjust(7,"0")
                 cv2.imwrite(str(output_path / img_name), frame)
                 self.frame_count += 1
 
