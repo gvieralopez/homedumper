@@ -1,10 +1,14 @@
 # homedumper
 
+[![MIT license](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
+![Generations](https://img.shields.io/badge/Generations-1--8-orange)
+![Updated for](https://img.shields.io/badge/Updated%20For-Crown%20of%20Tundra-teal)
+
 Computer vision software to automate the process of dumping a Pokemon HOME 
 database from a video. 
 
-> This project is still in an early stage and some of the
-> instructions below are not yet implemented. 
+> 🥚 This project is still in an early stage and some of the
+> instructions below may be not yet fully implemented. 
 
 ## 1. Instalation
 
@@ -113,3 +117,19 @@ the video.
 ### 2.4 Matching the extracted thumbnails with actual Pokémon data
 
 [Comming soon]
+
+## 3. Disclaimer
+
+This software comes bundled with data and graphics extracted from the Pokémon 
+series of video games. Some terminology from the Pokémon franchise is also 
+necessarily used within the software itself. This is all the intellectual 
+property of Nintendo, Creatures, inc., and GAME FREAK, inc. and is protected by 
+various copyrights and trademarks.
+
+The authors believe that the use of this intellectual property for a fan 
+reference is covered by fair use and that the software is significantly 
+impaired without said property included. Any use of this copyrighted property 
+is at your own legal risk.
+
+This software is not affiliated in any way with Nintendo, Pokémon or any other 
+game company.
