@@ -10,15 +10,17 @@ class FrameExtractor:
     """
     Class for extracting different frames from a video.
     """
-    
+
     def __init__(self, video_path: str, out_path: str = DEFAULT_OUT):
 
         # Ensure video path and output path are valid and get Path objects
         self._digest_paths(video_path, out_path)
         self.frame_count = 1
+        self.processed_frames = []
 
-
-    def _digest_paths(self, video_path: str, output_path: str = DEFAULT_OUT) -> tuple[pathlib.Path, pathlib.Path]:
+    def _digest_paths(
+        self, video_path: str, output_path: str = DEFAULT_OUT
+    ) -> tuple[pathlib.Path, pathlib.Path]:
         """
         Digests the video path and output path into a tuple of Path objects.
         Checks if the video path exists creates the output path if it doesn't exist.
@@ -57,8 +59,11 @@ class FrameExtractor:
         self.video_path = video_path
         self.output_path = output_path
 
-
     def extract_frames(self):
+        """
+        Extracts frames from the video and saves them to the output path only
+        if they are unique.
+        """
         # Create output path if it doesn't exist
         cap = cv2.VideoCapture(str(self.video_path))
 
@@ -73,8 +78,104 @@ class FrameExtractor:
 
             self.process_frame(frame, self.output_path)
 
+    def _is_stable(self, frame: npt.ArrayLike, threshold: int = 10) -> bool:
+        """
+        Checks if the frame is stable by inspecting if the
+        animation caused by pressing either L or R buttons is not present
+        in the frame. This can be done by checking the color of the regions of
+        the frame that indicate when one of those buttons are pressed.
+
+        Parameters
+        ----------
+        frame : npt.ArrayLike
+            Image frame to analyze
+        threshold : int, optional
+            Threshold for the color difference of the regions to be considered
+            stable, by default 10
+
+        Returns
+        -------
+        bool
+            True if the frame is stable (Not a transient of movement)
+        """
+
+        # Defines the regions of the frame to be checked
+        regions = {
+            "R": frame[74:103, 513:533],
+            "L": frame[74:103, 121:141],
+        }
+
+        # Define the color of the stable condition
+        target_color = [167, 180, 31]
+
+        # Check if the regions are stable
+        for region in regions.values():
+
+            # Retrieve the average value of the region's red channel
+            red_channel = region[:, :, 2]
+            avg = red_channel.mean()
+
+            # Check if the region is not stable
+            if abs(avg - target_color[2]) > threshold:
+                return False
+
+        # If all regions are stable, return True
+        return True
+
+    def _is_not_duplicate(self, frame: npt.ArrayLike, threshold: int = 10) -> bool:
+        """
+        Checks if the frame is not duplicate by comparing it with the previous
+        frames.
+
+        Parameters
+        ----------
+        frame : npt.ArrayLike
+            Image frame to analyze
+        threshold : int, optional
+            Threshold for the color difference of the images to be considered
+            different, by default 10
+
+        Returns
+        -------
+        bool
+            True if the frame is a new one (Not a duplicate)
+        """
+
+        # Retreive the region of interest from the frame
+        region = frame[59:505, 30:623, :]
+
+        # Check if the frame is the first one
+        if len(self.processed_frames) == 0:
+            self.processed_frames.append(region)
+            return True
+
+        # Check if the frame is a duplicate
+        for previous_frame_region in self.processed_frames:
+
+            diff = cv2.absdiff(previous_frame_region, region)
+
+            # Convert image to grayscale image
+            gray_image = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
+
+            # Convert the grayscale image to binary image
+            mask = cv2.inRange(gray_image, threshold, 255)
+
+            # Count the number of pixels that execeeding the threshold difference
+            diff_pix = cv2.countNonZero(mask)
+
+            # If there are more than 2000 pixelels that exceed the threshold,
+            # the frame is not a duplicate, 2000 is a number chosen analyzing
+            # the average frame difference between two consecutive slots with
+            # different pokemon
+            if diff_pix < 2000:
+                return False
+
+        # If the frame is not a duplicate, add it to the list
+        self.processed_frames.append(region)
+        return True
+
     def process_frame(self, frame: npt.ArrayLike, output_path: pathlib.Path):
-        """  
+        """
         Processes a frame and saves it to the output path if it is a new
         one.
 
@@ -86,12 +187,16 @@ class FrameExtractor:
             Destination where the frame will be saved if it is new
         """
 
-        # Check if the image is new
-        # TODO: Implement
+        # Check if the image is not a transient
+        if self._is_stable(frame):
 
-        # Save the frame to the output path
-        cv2.imwrite(str(output_path / f"{self.frame_count}.png"), frame)
-        self.frame_count += 1
+            # Check if the image is not a duplicate
+            if self._is_not_duplicate(frame):
+
+                # Save the frame to the output path
+                img_name = f"{self.frame_count}.png"
+                cv2.imwrite(str(output_path / img_name), frame)
+                self.frame_count += 1
 
 
 def extract(video_path: str, output_path: str = DEFAULT_OUT):
@@ -99,7 +204,6 @@ def extract(video_path: str, output_path: str = DEFAULT_OUT):
     fe = FrameExtractor(video_path, output_path)
     fe.extract_frames()
 
-        
 
 if __name__ == "__main__":
     extract("./data/myhome.mp4")
