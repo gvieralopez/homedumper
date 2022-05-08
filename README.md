@@ -38,7 +38,6 @@ The following step will assume we are using the video from `data/myhome.mp4`,
 to apply them to your own video, just use the name of your video instead of
 `my_home.mp4`.
 
-
 ### 2.2 Extracting the key frames from your video
 
 The first step of this software is to identify all the independent frames from the video
@@ -51,21 +50,26 @@ $ python -m homedumper extract data/myhome.mp4
 This will create the following folder structure:
 
 ```
-
     📁output                  
     └── 📁myhome          
         └── 📁frames
-            ├── 1.png
-            ├── 2.png
+            ├── 001.png
+            ├── 002.png
             ├── ...
             └── N.png
 ```
 
-Feel free to delete the images from boxes you don't want to dump to your db (if any).
+Where the `frames` subfolder should contain all *unique* frames of HOME boxes
+found in the video. They should look like this:
 
-> ℹ️ Pro tip: If you already have high quality pictures of your HOME boxes (1280 
+![](resources/frames.png)
+
+> ℹ️ **Pro tips:** 
+> 1. If you already have high quality pictures of your HOME boxes (1280 
 > x 720), you can create a similar folder structure and proceed with the 
 > following step.
+> 2. Feel free to delete the images from boxes you don't want to dump to your 
+> db (if any) before proceed to the next step.
 
 ### 2.3 Reading the content of each box from the key frames
 
@@ -84,19 +88,19 @@ like this one:
     📁output                  
     └── 📁myhome          
         └── 📁frames
-        │   ├── 1.png
-        │   ├── 2.png
+        │   ├── 001.png
+        │   ├── 002.png
         │   ├── ...
         │   └── N.png
         └── 📁boxes
             ├── 📁HOME 001
-            │   ├── 1.png
-            │   ├── 2.png
+            │   ├── 01.png
+            │   ├── 02.png
             │   ├── ...
             │   └── 30.png
             ├── 📁HOME 002
-            │   ├── 1.png
-            │   ├── 2.png
+            │   ├── 01.png
+            │   ├── 02.png
             │   ├── ...
             │   └── 30.png
             ...
