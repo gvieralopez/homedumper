@@ -1,3 +1,4 @@
+from typing import List
 import cv2
 import pathlib
 import logging
@@ -16,7 +17,7 @@ class FrameExtractor:
         if not self._digest_paths(video_path, out_path):
             raise ValueError("Invalid video path")
         self.frame_count = 1
-        self.processed_frames = []
+        self.processed_frames: List[npt.ArrayLike] = []
 
     def _digest_paths(self, video_path: str, output_path: str = DEFAULT_OUT) -> bool:
         """
@@ -33,22 +34,22 @@ class FrameExtractor:
         """
 
         # Check if video path exists and is a file
-        video_path = pathlib.Path(video_path)
-        if not video_path.exists() or video_path.is_dir():
-            logging.error(f"Invalid video path: {video_path.absolute()}")
+        video_path_obj = pathlib.Path(video_path)
+        if not video_path_obj.exists() or video_path_obj.is_dir():
+            logging.error(f"Invalid video path: {video_path_obj.absolute()}")
             return False
 
         # Create a path object for the output
-        output_path = pathlib.Path(output_path)
+        output_path_obj = pathlib.Path(output_path)
 
         # Append video name to output path
-        output_path = output_path / video_path.stem / "frames"
+        output_path_obj = output_path_obj / video_path_obj.stem / "frames"
 
         # Create output path if it doesn't exist
-        output_path.mkdir(parents=True, exist_ok=True)
+        output_path_obj.mkdir(parents=True, exist_ok=True)
 
-        self.video_path = video_path
-        self.output_path = output_path
+        self.video_path = video_path_obj
+        self.output_path = output_path_obj
         return True
 
     def extract_frames(self) -> int:
@@ -76,7 +77,7 @@ class FrameExtractor:
 
             self.process_frame(frame, self.output_path)
 
-    def _is_stable(self, frame: npt.ArrayLike, threshold: int = 10) -> bool:
+    def _is_stable(self, frame: npt.NDArray, threshold: int = 10) -> bool:
         """
         Checks if the frame is stable by inspecting if the
         animation caused by pressing either L or R buttons is not present
@@ -120,7 +121,7 @@ class FrameExtractor:
         # If all regions are stable, return True
         return True
 
-    def _is_not_duplicate(self, frame: npt.ArrayLike, threshold: int = 10) -> bool:
+    def _is_not_duplicate(self, frame: npt.NDArray, threshold: int = 10) -> bool:
         """
         Checks if the frame is not duplicate by comparing it with the previous
         frames.
@@ -172,7 +173,7 @@ class FrameExtractor:
         self.processed_frames.append(region)
         return True
 
-    def process_frame(self, frame: npt.ArrayLike, output_path: pathlib.Path):
+    def process_frame(self, frame: npt.NDArray, output_path: pathlib.Path):
         """
         Processes a frame and saves it to the output path if it is a new
         one.
