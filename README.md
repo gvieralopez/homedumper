@@ -19,15 +19,13 @@ system:
 * [Git](https://git-scm.com/downloads) 
 * [Tesseract](https://tesseract-ocr.github.io/tessdoc/Installation.html) 
 
-Then, run:
+Then, fetch the source code and install software dependencies:
 
 ```bash
 $ git clone https://github.com/gvieralopez/homedumper.git
 $ cd homedumper
 $ pip install -r requirements.txt
 ```
-
-To fetch the source code and install software dependencies.
 
 ## 2. Usage
 
@@ -103,12 +101,14 @@ like this one:
         │   ├── ...
         │   └── N.png
         └── 📁boxes
-            ├── 📁HOME 001
+            ├── 📁001
+            │   ├── title.txt
             │   ├── 01.png
             │   ├── 02.png
             │   ├── ...
             │   └── 30.png
-            ├── 📁HOME 002
+            ├── 📁002
+            │   ├── title.txt
             │   ├── 01.png
             │   ├── 02.png
             │   ├── ...
@@ -116,8 +116,10 @@ like this one:
             ...
 ```
 
-Note that all folder names inside `boxes` folder correspond to the original boxes names in
-the video.
+Note that all subfolder names inside `boxes` folder correspond to the original 
+image names in the `frame` folder. Inside each subfolder there will be a
+`title.txt` file with the name of the box in the original Pokemon Home box and
+30 `.png` files with the thumbnails of every Pokémon in the box.
 
 
 ### 2.4 Matching the extracted thumbnails with actual Pokémon data

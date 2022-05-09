@@ -59,11 +59,22 @@ def pokemon_thumbnails(frame: npt.NDArray) -> List[npt.NDArray]:
     List[npt.NDArray]
         List of the pokemon thumbnails.
     """
-    thumbnails: List[npt.NDArray] = []
 
-    # TODO: Implement the extraction of the thumbnails
+    # Parametrize the layout of the thumbnails
+    dy = 76
+    dx = 92
+    y0 = 128
+    x0 = 50
 
-    return thumbnails
+    # Get the coordinates of each possible pokemon thumbnail
+    regions = (
+        (y0 + i * dy, y0 + (i + 1) * dy, x0 + j * dx, x0 + (j + 1) * dx)
+        for i in range(5)
+        for j in range(6)
+    )
+
+    # Extract the pokemon thumbnails
+    return [frame[y1:y2, x1:x2, :] for y1, y2, x1, x2 in regions]
 
 
 def _export_thumbnails(pokemons: List[npt.NDArray], output_path: Path):
