@@ -73,7 +73,7 @@ class FrameExtractor:
 
             # If the frame is empty, break
             if not ret:
-                return self.frame_count
+                return self.frame_count - 1
 
             self.process_frame(frame, self.output_path)
 
@@ -198,7 +198,7 @@ class FrameExtractor:
                 self.frame_count += 1
 
 
-def extract(video_path: str, output_path: str = DEFAULT_OUT):
+def extract(video_path: str, output_path: str = DEFAULT_OUT) -> int:
     """
     Extracts frames from the video and saves them to the output path only
     if they are unique.

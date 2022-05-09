@@ -30,7 +30,9 @@ def boxify(folder_path: str):
     folder_path : str
         Path to the folder that contains the 'frames' subfolder with the images.
     """    
-    typer.echo(f"Not implemented yet.")
+
+    count = homedumper.boxify(folder_path=folder_path)
+    typer.echo(f"{count} frames converted to box from {folder_path}")
 
 if __name__ == "__main__":    
     app()

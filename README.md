@@ -12,8 +12,14 @@ database from a video.
 
 ## 1. Instalation
 
-Make sure you have [Python](https://www.python.org/downloads/) and 
-[git](https://git-scm.com/downloads) installed in your system. Then run:
+Make sure you have the following programs installed and in the `PATH` of your 
+system:
+
+* [Python](https://www.python.org/downloads/),  
+* [Git](https://git-scm.com/downloads) and 
+* [Tesseract](https://tesseract-ocr.github.io/tessdoc/Installation.html) 
+
+Then, run:
 
 ```bash
 $ git clone https://github.com/gvieralopez/homedumper.git
@@ -21,7 +27,7 @@ $ cd homedumper
 $ pip install -r requirements.txt
 ```
 
-To fetch the source code and install all the dependencies.
+To fetch the source code and install software dependencies.
 
 ## 2. Usage
 
