@@ -10,13 +10,13 @@ database from a video.
 > 🥚 This project is still in an early stage and some of the
 > instructions below may be not yet fully implemented. 
 
-## 1. Instalation
+## 1. Installation
 
 Make sure you have the following programs installed and in the `PATH` of your 
 system:
 
-* [Python](https://www.python.org/downloads/),  
-* [Git](https://git-scm.com/downloads) and 
+* [Python](https://www.python.org/downloads/)
+* [Git](https://git-scm.com/downloads) 
 * [Tesseract](https://tesseract-ocr.github.io/tessdoc/Installation.html) 
 
 Then, run:
