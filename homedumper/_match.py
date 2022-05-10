@@ -7,7 +7,7 @@ import cv2
 import numpy.typing as npt
 
 from homedumper.const import CACHE_DIR
-
+from homedumper._download import name_dict
 
 def ssim_likelihood(img1: npt.NDArray, img2: npt.NDArray) -> float:
     """
@@ -40,8 +40,28 @@ def ssim_likelihood(img1: npt.NDArray, img2: npt.NDArray) -> float:
 
     return score
 
+def id2name(id: str) -> str:
+    """
+    Translate the id of a pokemon into its name.
 
-def _best_match(thumbnail: npt.NDArray, templates: dict) -> float:
+    Parameters
+    ----------
+    id : str
+        Name of the template file
+
+    Returns
+    -------
+    str
+        Name of the pokemon
+    """    
+
+    translator = name_dict()
+    if id in translator.keys():
+        return translator[id]
+    logging.error(f"No pokemon name found for template with {id}.png")
+    return id
+
+def _best_match(thumbnail: npt.NDArray, templates: dict) -> str:
     """
     Estimate the id of the most likely Pokemon corresponding to a thumbnail.
 
@@ -54,7 +74,7 @@ def _best_match(thumbnail: npt.NDArray, templates: dict) -> float:
         the template images.
     """
     best = None
-    like = 0
+    like = 0.0
 
     # Iterate over the templates
     for name, template in templates.items():
@@ -70,6 +90,10 @@ def _best_match(thumbnail: npt.NDArray, templates: dict) -> float:
     # Acept the best match if it is above a certain threshold
     if like < 0.4:
         best = None
+
+    # Translate best match into pokemon name
+    if best:
+        best = id2name(best)
 
     return best
 
@@ -99,7 +123,7 @@ def parse_slot_path(path: Path) -> Tuple[str, str]:
     return title, slot_id
 
 
-def _match(boxes_path: Path) -> List[Tuple[Path, str]]:
+def _match(boxes_path: Path) -> List[Tuple[str, str, str]]:
     """
     Iterate over all boxes and estimates the id of the more likely Pokemon
     corresponding to each slot.
@@ -121,7 +145,7 @@ def _match(boxes_path: Path) -> List[Tuple[Path, str]]:
     # Load the templates
     templates = {}
     for template in assets_path.glob("*.png"):
-        templates[template.name] = cv2.imread(str(template))
+        templates[template.stem] = cv2.imread(str(template))
     # TODO: See what to do with the shiny
 
     # Initialize empty list
@@ -134,6 +158,7 @@ def _match(boxes_path: Path) -> List[Tuple[Path, str]]:
         for thumbnail in box_path.glob("*.png"):
 
             # Read the target image
+            logging.info(f"Matching {thumbnail.name} from {box_path.name}")
             thu = cv2.imread(str(thumbnail))
             name = _best_match(thu, templates)
             box_name, slot_id = parse_slot_path(thumbnail)

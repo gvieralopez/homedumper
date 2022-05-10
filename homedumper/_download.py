@@ -196,11 +196,33 @@ def _path_to_id2name_file() -> Path:
 
     return filepath
 
-def download_name_dict():
+def name_dict() -> dict:
+    """
+    Returns the name dictionary.
+
+    Returns
+    -------
+    dict
+        Dictionary to map template ids with pokemon names.
+    """    
+
+    path = _path_to_id2name_file()
+    if path.exists():
+        with open(path, 'r') as f:
+            return json.load(f)
+    else:
+        return download_name_dict()
+    
+
+def download_name_dict() -> dict:
     """
     Download the name dictionary to map template ids with pokemon names.
-    """
 
+    Returns
+    -------
+    dict
+        Dictionary to map template ids with pokemon names.
+    """    
     # Fetch data in json format
     resp = requests.get(URL_RAW_POKEMON_METADATA)
     data = json.loads(resp.text)
@@ -212,6 +234,9 @@ def download_name_dict():
     path = _path_to_id2name_file()
     with open(path, 'w') as outfile:
         json.dump(data, outfile)
+    
+    # retrun the data
+    return data
 
 
 def download(force_redownload: bool = False, force_resize: bool = False):
