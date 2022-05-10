@@ -1,3 +1,4 @@
+import json
 import logging
 import zipfile
 import urllib.request
@@ -5,7 +6,14 @@ import os
 import cv2
 import shutil
 from pathlib import Path
-from homedumper.const import CACHE_DIR, URL_TEMPLATES, THUMBANIL_SIZE
+
+import requests
+from homedumper.const import (
+    CACHE_DIR,
+    URL_TEMPLATES,
+    THUMBANIL_SIZE,
+    URL_RAW_POKEMON_METADATA,
+)
 
 
 def download_templates(URL: str, path: Path):
@@ -93,7 +101,16 @@ def is_valid_thumbnail(name: str) -> bool:
     """
 
     # List of banned keywords in the template name
-    banned = ["-gmax", "-mega", "-back", "-complete", "-busted", "-ultra", "-primal", "0000"]
+    banned = [
+        "-gmax",
+        "-mega",
+        "-back",
+        "-complete",
+        "-busted",
+        "-ultra",
+        "-primal",
+        "0000",
+    ]
 
     # Filter templates by name
     for word in banned:
@@ -139,6 +156,64 @@ def resize_templates(cache_path: Path, subfolder: str):
                 cv2.imwrite(str(out_file), resized_img)
 
 
+def convert_name_dict(data: dict) -> dict:
+    """
+    Convert the name dictionary to the expected format.
+
+    Parameters
+    ----------
+    data : dict
+        Raw Pokemon metadata dictionary
+
+    Returns
+    -------
+    dict
+        Dictionary to map template ids with pokemon names.
+    """
+
+    # Create the output dictionary
+    names = {}
+
+    # Fill the output dictionary
+    for name, metadata in data.items():
+        id = metadata["images"]["home_render"]
+        names[id] = name
+
+    return names
+
+def _path_to_id2name_file() -> Path:
+    """
+    Returns the path to the id2name file.
+
+    Returns
+    -------
+    Path
+        Path to the id2name file.
+    """    
+    cache_path = Path(CACHE_DIR)
+    filename = 'id2name.json'
+    filepath = cache_path / filename
+
+    return filepath
+
+def download_name_dict():
+    """
+    Download the name dictionary to map template ids with pokemon names.
+    """
+
+    # Fetch data in json format
+    resp = requests.get(URL_RAW_POKEMON_METADATA)
+    data = json.loads(resp.text)
+
+    # Convert it to the expected format
+    data = convert_name_dict(data)
+    
+    # Save it in cache
+    path = _path_to_id2name_file()
+    with open(path, 'w') as outfile:
+        json.dump(data, outfile)
+
+
 def download(force_redownload: bool = False, force_resize: bool = False):
     """
     Download the templates.
@@ -161,7 +236,9 @@ def download(force_redownload: bool = False, force_resize: bool = False):
     # Check if the preprocessed templates are ready
     resize = True
     resized_folder = "resized"
-    if not force_redownload and check_cached_templates(cache_path, resized_folder, 1000):
+    if not force_redownload and check_cached_templates(
+        cache_path, resized_folder, 1000
+    ):
         logging.info("Resized templates are already cached.")
         resize = False
 
@@ -169,8 +246,15 @@ def download(force_redownload: bool = False, force_resize: bool = False):
     if resize:
         logging.info("Resizing templates.")
         resize_templates(cache_path, resized_folder)
-
+    
     logging.info("Templates are ready.")
+
+    # Ensure the existence of the name dictionary
+    if not _path_to_id2name_file().exists() or force_redownload:
+        logging.info("Downloading name dictionary.")
+        download_name_dict()
+
+    logging.info("Name dictionary is ready.")
 
 
 if __name__ == "__main__":
