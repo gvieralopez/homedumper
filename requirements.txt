@@ -1,3 +1,4 @@
 opencv-python
 typer
 pytesseract
+scikit-image
