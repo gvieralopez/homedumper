@@ -61,20 +61,23 @@ def pokemon_thumbnails(frame: npt.NDArray) -> List[npt.NDArray]:
     """
 
     # Parametrize the layout of the thumbnails
-    dy = 76
-    dx = 92
-    y0 = 128
-    x0 = 50
+    dy = 75  # Vertical distance between thumbnails' centers
+    dx = 92  # Horizontal distance between thumbnails' centers
+    y0 = 162  # Vertical offset of the first thumbnail
+    x0 = 94  # Horizontal offset of the first thumbnail
+    w = 37  # half-Width of the squared thumbnails
 
     # Get the coordinates of each possible pokemon thumbnail
     regions = (
-        (y0 + i * dy, y0 + (i + 1) * dy, x0 + j * dx, x0 + (j + 1) * dx)
+        (y0 - w + i * dy, y0 + w + i * dy, x0 - w + j * dx, x0 + w + j * dx)
         for i in range(5)
         for j in range(6)
     )
 
     # Extract the pokemon thumbnails
-    return [frame[y1:y2, x1:x2, :] for y1, y2, x1, x2 in regions]
+    thumbnails = [frame[y1:y2, x1:x2, :] for y1, y2, x1, x2 in regions]
+
+    return thumbnails
 
 
 def _export_thumbnails(pokemons: List[npt.NDArray], output_path: Path):
@@ -153,7 +156,6 @@ def frame2box(frame: npt.NDArray) -> Tuple[str, List[npt.NDArray]]:
     # Extract the box pokemon rois
     pokemons = pokemon_thumbnails(frame)
 
-    print(title)
     return title, pokemons
 
 
