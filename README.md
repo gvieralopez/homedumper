@@ -7,8 +7,8 @@
 Computer vision software to automate the process of dumping a Pokemon HOME 
 database from a video. 
 
-> 🥚 This project is still in an early stage and some of the
-> instructions below may be not yet fully implemented. 
+> 🥚 This project is still in an early stage. Check the [TODO.md](TODO.md)
+> to see upcoming features.
 
 ## 1. Installation
 
@@ -122,9 +122,34 @@ image names in the `frame` folder. Inside each subfolder there will be a
 30 `.png` files with the thumbnails of every Pokémon in the box.
 
 
-### 2.4 Matching the extracted thumbnails with actual Pokémon data
 
-[Comming soon]
+### 2.4 Downloading the database of pokemon thumbnails
+
+This step is required to be able to match our extracted thumbnails with
+every possible candidate. To download the db run:
+
+```bash
+$ python -m homedumper download
+```
+
+### 2.5 Matching the extracted thumbnails with actual Pokémon data
+
+Finally, to match every thumbnail execute:
+
+```bash
+$ python -m homedumper match output/myhome
+```
+
+This will generate a `.csv` file with the results in `output/myhome` that looks
+like this:
+
+| Box name  | Slot Number   | Pokémon ID  |
+| --------- | ------------- | ----------- |
+| Home 001  |      01       |      0001   |
+| Home 001  |      02       |      0002   |
+|     ...   |     ...       |      ...    |
+| Home 015  |      30       |      0781   |
+
 
 ## 3. Disclaimer
 
@@ -141,3 +166,11 @@ is at your own legal risk.
 
 This software is not affiliated in any way with Nintendo, Pokémon or any other 
 game company.
+
+## 4. Credits
+
+Project developed by [@gvieralopez](https://github.com/gvieralopez/) for educational
+purposes.
+
+Thanks to [@itsjavi](https://github.com/itsjavi) for the support with the
+assets and the inspiration given by his project [livingdex](https://github.com/itsjavi/livingdex)
