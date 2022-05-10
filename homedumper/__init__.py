@@ -1,6 +1,7 @@
 import logging
 from homedumper._extract import extract
 from homedumper._boxify import boxify
+from homedumper._download import download
 
 logging.basicConfig(
     level=logging.INFO,
@@ -10,7 +11,8 @@ logging.basicConfig(
 
 __all__ = [
     'extract',
-    'boxify'
+    'boxify',
+    'download',
 ]
 
 __version__ = '0.0.1'
