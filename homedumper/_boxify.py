@@ -241,7 +241,11 @@ def boxify(folder_path: str) -> int:
     """
 
     # Get the input and output path objects
-    input_path_obj, output_path_obj = _diggest_project_path(folder_path)
+    try:
+        input_path_obj, output_path_obj = _diggest_project_path(folder_path)
+    except ValueError as err:        
+        logging.error(f"No subfolder 'frames' with png files inside was found in {folder_path}")
+        return 0
 
     # Set a counter for processed images
     image_count = 0

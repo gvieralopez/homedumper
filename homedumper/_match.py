@@ -208,20 +208,27 @@ def match(path: str) -> int:
 
     # Create a path to the input folder
     project_path = Path(path)
-    boxes_path = project_path / "boxes"
 
-    # Check if the input folder exists and is a valid project folder
-    if boxes_path.exists() and boxes_path.is_dir():
+    if project_path.exists() and project_path.is_dir():
+        boxes_path = project_path / "boxes"
 
-        # match the data
-        data = _match(boxes_path)
+        # Check if the input folder exists and is a valid project folder
+        if boxes_path.exists() and boxes_path.is_dir():       
 
-        # Write the data to a csv file
-        header = ("Box name", "Slot Number", "Pokemon ID")
-        file = project_path / "match.csv"
-        export_csv(file, header, data)
+            # match the data
+            data = _match(boxes_path)
 
-        return len(data)
+            # Write the data to a csv file
+            header = ("Box name", "Slot Number", "Pokemon ID")
+            file = project_path / "match.csv"
+            export_csv(file, header, data)
+
+            return len(data)
+        else:
+            logging.error(f"{boxes_path} doesn't exist. Remember to boxify before match.")
+    
+    else:
+        logging.error(f"{path} doesn't exist.")
 
     # Return 0 if the input folder doesn't exist or is not a valid project folder
     return 0
