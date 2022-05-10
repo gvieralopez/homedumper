@@ -38,6 +38,22 @@ def boxify(folder_path: str):
 
 
 @app.command()
+def match(folder_path: str):
+    """
+    Convert a folder structure with isolated images of each pokemon found into
+    an annotated list of pokemon found in the images.
+
+    Parameters
+    ----------
+    folder_path : str
+        Path to the folder that contains the 'boxes' subfolder with the images.
+    """
+
+    count = homedumper.match(path=folder_path)
+    typer.echo(f"{count} pokemon found in {folder_path}")
+
+
+@app.command()
 def download():
     """
     Download required templates.
