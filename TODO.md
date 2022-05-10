@@ -12,11 +12,15 @@
 
 ## Related to matching extracted thumbnails with actual data (_match.py)
 
-* Add to requirements.txt the definitive lib to compute likelihood (scikit-image)
-* Automate download of assets
-* Implement brute force matching algoritm
+* Search also for shiny pokemon
+* Export also a json file
 * Improve matching algorithm with something smarter
+* Add multiprocessing for faster matching
 * Manually deal with Go logo if required
-* Export data in csv
-* Update Readme when the process is complete
+* Write unit tests
+
+# Integration
+
+* Make an all-in-one command
+* Simplify README and move details into a complementary MD file
 * Write unit tests
