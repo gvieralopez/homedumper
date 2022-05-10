@@ -4,7 +4,7 @@ import cv2
 from pathlib import Path
 import numpy.typing as npt
 from typing import Tuple, List
-
+from homedumper.const import THUMBANIL_SIZE
 
 current_tittle = 1
 
@@ -65,7 +65,7 @@ def pokemon_thumbnails(frame: npt.NDArray) -> List[npt.NDArray]:
     dx = 92  # Horizontal distance between thumbnails' centers
     y0 = 162  # Vertical offset of the first thumbnail
     x0 = 94  # Horizontal offset of the first thumbnail
-    w = 37  # half-Width of the squared thumbnails
+    w = THUMBANIL_SIZE  # half-Width of the squared thumbnails
 
     # Get the coordinates of each possible pokemon thumbnail
     regions = (
