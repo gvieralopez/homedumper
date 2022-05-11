@@ -5,11 +5,13 @@
 # homedumper
 
 Computer vision software to automate the dumping process of a Pokemon HOME 
-database from a video. Basically, we take a video like this:
+database from a video. 
+
+We take a video like this:
 
 ![](resources/myhome.gif)
 
-and we give you a `.csv` file with the info:
+and turn it into a `.csv` like this:
 
 | Box name  | Slot Number   | Pokémon ID  |
 | --------- | ------------- | ----------- |
@@ -54,9 +56,8 @@ $ python -m homedumper dump data/myhome.mp4
 
 And go grab a cup of ☕ because this could take some minutes.
 
-when the process is finished, you will see a file `match.csv` inside the 
+When the process is finished, you will see a file `match.csv` inside the 
 `output` folder. Easy, right?
-
 
 ## 3. What is next?
 
