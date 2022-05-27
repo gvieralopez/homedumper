@@ -27,18 +27,12 @@ def ssim_likelihood(img1: npt.NDArray, img2: npt.NDArray) -> float:
         The likelihood of the two images being the same using the SSIM method.
     """
 
-    # Convert images to grayscale
-    first_gray = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
-    second_gray = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
-
     # Convert the second image to the first image's size
-    if first_gray.shape != second_gray.shape:
-        second_gray = cv2.resize(second_gray, first_gray.shape[::-1])
+    if img1.shape != img2.shape:
+        img2 = cv2.resize(img2, img1.shape)
 
     # Compute SSIM between two images
-    score, diff = structural_similarity(first_gray, second_gray, full=True)
-
-    return score
+    return structural_similarity(img1, img2, channel_axis=2)
 
 def id2name(id: str) -> str:
     """
@@ -152,10 +146,10 @@ def _match(boxes_path: Path) -> List[Tuple[str, str, str]]:
     matches = []
 
     # Iterate over the boxes
-    for box_path in boxes_path.iterdir():
+    for box_path in sorted(boxes_path.iterdir()):
 
         # Iterate over the slots
-        for thumbnail in box_path.glob("*.png"):
+        for thumbnail in sorted(box_path.glob("*.png")):
 
             # Read the target image
             logging.info(f"Matching {thumbnail.name} from {box_path.name}")
