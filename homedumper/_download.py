@@ -177,7 +177,7 @@ def convert_name_dict(data: dict) -> dict:
     # Fill the output dictionary
     for name, metadata in data.items():
         id = metadata["images"]["home_render"]
-        names[id] = name
+        names[id] = metadata["slug"]
 
     return names
 
