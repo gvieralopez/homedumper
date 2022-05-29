@@ -1,4 +1,5 @@
 import csv
+import json
 import logging
 from pathlib import Path
 from typing import List, Tuple
@@ -184,6 +185,67 @@ def export_csv(path: Path, header: Tuple[str, str, str], data: List[Tuple[str, s
         # write the data
         writer.writerows(data)
 
+def _emptybox(name: str) -> dict:
+    """
+    Creates an empty box.
+
+    Parameters
+    ----------
+    name : str
+        Name of the box.
+
+    Returns
+    -------
+    dict
+        Dictionary with the empty box.
+    """
+
+    return {
+      "title": name,
+      "pokemon": [None for i in range(30)]
+    }
+
+def export_json(path: Path, data: List[Tuple[str, str, str]]):
+    """
+    Export the data to a csv file.
+
+    Parameters
+    ----------
+    path : Path
+        Path to the json file.
+    data : List[Tuple[str, str, str]
+        List of all rows (Box name, Slot Number, Pokemon ID).
+    """
+
+    json_data = {
+        "name": "Dumped",
+        "slug": "dumped",
+        "description": "Pokémon Boxes dumped from the video",
+        "boxes": []
+    }
+
+    current_box_name = None
+    current_box = None
+
+    for box_name, slot_id, pokemon_id in data:
+
+        if current_box is None:
+            current_box_name = box_name
+            current_box = _emptybox(box_name)
+
+        if box_name != current_box_name:
+            current_box_name = box_name
+
+            json_data["boxes"].append(current_box)
+            current_box = _emptybox(box_name)
+        
+        current_box["pokemon"][int(slot_id)-1] = pokemon_id
+    
+    json_data["boxes"].append(current_box)
+    
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(json_data, f, indent=4)
+
 
 def match(path: str) -> int:
     """
@@ -214,8 +276,12 @@ def match(path: str) -> int:
 
             # Write the data to a csv file
             header = ("Box name", "Slot Number", "Pokemon ID")
-            file = project_path / "match.csv"
-            export_csv(file, header, data)
+            csv_file = project_path / "match.csv"
+            export_csv(csv_file, header, data)
+
+            # Write the data to a json file
+            json_file = project_path / "match.json"
+            export_json(json_file, data)
 
             return len(data)
         else:
