@@ -6,6 +6,7 @@ import os
 import cv2
 import shutil
 from pathlib import Path
+import numpy as np
 
 import requests
 from homedumper.const import (
@@ -142,6 +143,12 @@ def resize_templates(cache_path: Path, subfolder: str):
         out_path = cache_path / subfolder / type
         out_path.mkdir(parents=True, exist_ok=True)
 
+        # Create a white background image
+        new_size = (THUMBANIL_SIZE * 2, THUMBANIL_SIZE * 2)
+        out_file = resized_path / type / "0000.png"
+        img = np.ones((THUMBANIL_SIZE * 2, THUMBANIL_SIZE * 2, 3), dtype=np.uint8) * 255
+        cv2.imwrite(str(out_file), img)
+
         # Pick each file
         for in_file in in_path.glob("*.png"):
 
@@ -150,7 +157,6 @@ def resize_templates(cache_path: Path, subfolder: str):
 
                 # Resize the image
                 out_file = resized_path / type / in_file.name
-                new_size = (THUMBANIL_SIZE * 2, THUMBANIL_SIZE * 2)
                 img = cv2.imread(str(in_file))
                 resized_img = cv2.resize(img, new_size, interpolation=cv2.INTER_AREA)
                 cv2.imwrite(str(out_file), resized_img)

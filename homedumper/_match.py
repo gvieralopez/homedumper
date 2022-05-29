@@ -82,15 +82,12 @@ def _best_match(thumbnail: npt.NDArray, templates: dict) -> str:
             best = name
             like = lk
 
-    # Acept the best match if it is above a certain threshold
-    if like < 0.4:
-        best = None
+    # If the match is with the empty image, return None
+    if best == "0000":
+        return None
 
     # Translate best match into pokemon name
-    if best:
-        best = id2name(best)
-
-    return best
+    return id2name(best)
 
 
 def parse_slot_path(path: Path) -> Tuple[str, str]:
