@@ -1,5 +1,21 @@
 # Work To do in homedumper
 
+The current version of the project is able to identify the 1120 Pokémon present
+in the sample video with the following performance:
+
+Correct: 847
+Incorrect: 259
+
+Current mistakes are distributed according its nature as:
+
+Incorrect species: 133
+Incorrect forms: 126
+Empty slots missed: 2
+
+Current results are far from perfect and still take some time to be computed. 
+Next, we will list some further task that we believe will improve the overall
+accuracy or the computing time. Feel free to contribute on any of them. 
+
 ## Related to the identification of key frames from videos (_extract.py)
 
 * Improve the algorithm to compare if an image is a duplicate frame
