@@ -4,14 +4,17 @@
 
 # homedumper
 
-Computer vision software to automate the dumping process of a Pokemon HOME 
+Computer vision software to automagically dump a Pokémon HOME 
 database from a video. 
 
-We take a video like this:
+> 🥚 This project is still in an early stage with 
+> [many more features and improvements](TODO.md) to come.
+
+We turn a video:
 
 ![](resources/myhome.gif)
 
-and turn it into a `.csv` like this:
+into a `.csv` file:
 
 | Box name  | Slot Number   | Pokémon ID  |
 | --------- | ------------- | ----------- |
@@ -21,17 +24,15 @@ and turn it into a `.csv` like this:
 | Home 015  |      30       |  zarurde    |
 
 
-> 🥚 This project is still in an early stage with 
-> [many more features and improvements](TODO.md) to come.
 
 ## 1. Installation
 
-Make sure you have the following programs installed and added in the `PATH` of 
+Make sure you have the following programs installed and in the `PATH` of 
 your system:
 
-* [Python](https://www.python.org/downloads/)
-* [Git](https://git-scm.com/downloads) 
-* [Tesseract](https://tesseract-ocr.github.io/tessdoc/Installation.html) 
+[Python](https://www.python.org/downloads/) |
+[Git](https://git-scm.com/downloads) |
+[Tesseract](https://tesseract-ocr.github.io/tessdoc/Installation.html) 
 
 Then, fetch the source code of this project:
 
